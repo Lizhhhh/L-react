@@ -6,6 +6,10 @@ import { Clock } from './components/Clock'
 import { StateTest } from './components/StateTest'
 import { CartSample } from './components/CartSample'
 import { LifeCycle } from './components/LifeCycle'
+import { AntdTest } from './components/AntdTest'
+import { CommentList } from './components/CommentList'
+import { Hoc } from './components/Hoc'
+import Composition from './components/Composition'
 
 class App extends Component {
   state = {
@@ -38,6 +42,10 @@ class App extends Component {
         <StateTest> </StateTest>
         {/* 条件与循环 */} <CartSample title="奇怪的栗子"> </CartSample>
         {this.state.prop && <LifeCycle prop={this.state.prop}> </LifeCycle>}
+        <AntdTest></AntdTest>
+        <CommentList></CommentList>
+        <Hoc></Hoc>
+        <Composition></Composition>
       </div>
     )
   }
