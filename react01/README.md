@@ -722,4 +722,296 @@ function Filter({ children ,type }) {
 }
 ````
 
+# Hook
+  - 是React16.8一个新增项,它可以让你在不编写class的情况下使用state以及其他的React特性
+  - 特点:
+    1. 无需修改组件结构的情况下复用状态逻辑
+    2. 将组件相互关联的部分拆分成更小的函数,复杂组件将变得更容易理解
+    3. 更简洁、更易理解的代码
+# 使用Hook的栗子
+````
+import React, { useState } from 'react'
+
+export default function HookTest() {
+  // useState(initState)
+  const [count, setCount] = useState(0)
+
+  // 多个状态
+  const [age] = useState(20)
+  const [fruit, setFruit] = useState('banana')
+  const [input, setInput] = useState('')
+  const [fruits, setFruits] = useState(['apple', 'banana'])
+
+  return (
+    <div>
+      <p>点击了 {count} 次</p>
+      <button onClick={() => setCount(count + 1)}>点击</button>
+
+      <p>年龄: {age}</p>
+      <p>选择的水果: {fruit}</p>
+      <p>
+        <input type="text" value={input} onChange={e => setInput(e.target.value)} />
+        <button onClick={()=>{setFruits([...fruits, input]);setInput('')}}>新增水果</button>
+      </p>
+      <ul>
+        {fruits.map(f => (
+          <li key={f} onClick={() => setFruit(f)}>{f}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+````
+
+# 副作用钩子 - Effect Hook
+  - useEffect就是一个Effect Hook,给函数组件增加了操作副作用的能力.
+  - 它跟class组件中的componentDidMount、componentDidUpdate和componentwillUnmount具有相同作用(只不过是合并了)
+  - 栗子: 更新 HooksTest.js
+````javascript
+import React, {useState, useEffect } from 'react';
+useEffect(() => {
+  // Update the document title using the browser API
+  document.title = `您点击了 ${count}次`
+})
+
+// 监听count的变化
+useEffect(() => {
+  console.log('count依赖');
+  document.title = `您点击了${count}次`
+},[count]);
+// 此时只有count发生改变时才触发这个副作用钩子
+````
+  - 注:
+    1. 相当于是观察数据,当观察的数据发生变化时执行
+    2. 第二个参数用于收集观察的数据
+
+# 自定义钩子 - Custom Hook
+  - 自定义Hook是一个函数,其名称以"use"开头,函数内部可以调用其他的Hook.
+````javascript
+function useAge() {
+  const [age, setAge] = useState(0);
+  useEffect(() => {
+    setTimeout(() =>{
+      setAge(20)
+    }, 2000)
+  });
+  return age;
+}
+
+// 使用
+const age = useAge();
+<p>年龄 {age? age: 'loading...' }</p>
+````
+
+# 组件跨层级通信 - Context
+  - 上下文提供一种不需要每层设置props就能跨多级组件传递数据的方式
+  - Context相关API
+    + React.createContext
+    + Context.Provider
+    + Class.contextType
+    + Context.Consumer
+
+# 基本用法
+  - Provider提供值
+  - Consumer来消费传递的值
+````javascript
+import React from 'react';
+
+// 创建一个上下文
+const Mycontext = React.createContext();
+const { Provider, Consumer } = MyContext;
+
+function Child(prop) {
+  return <div>Child: {prop.foo} </div>
+}
+
+export default function ContextTest() {
+  return (
+    <div>
+      <Provider value ={ {foo: 'bar'} }>
+        <Consumer>
+          {value => <Child {...child} />}
+        </Consumer>
+      </Provider>
+    </div>
+  )
+}
+````
+  - 使用hook来消费
+````javascript
+import React, {useContext} from 'react';
+const { Provider } = MyContext;
+
+const MyContext = React.createContext();
+
+// 使用hook消费
+function Child2(prop) {
+  const ctx = useContext(MyContext);
+  return <div>Child2: {ctx.foo} </div>
+}
+
+export default function ContextTest() {
+  return (
+    <div>
+      <Provider value={{foo: 'bar'}}>
+       <Child2></Child2>
+      </Provider>
+    </div>
+  )
+}
+````
+  - 使用class指定静态contextType
+````javascript
+import React from 'react'
+const MyContext = React.createContext();
+
+class Child3 extends React.Component{
+  static contextType = MyContext;
+  render(){
+    return <div>
+      Child3: {this.context.foo}
+    </div>
+  }
+}
+````
+
+# 使用antd自定义一个登录组件
+  - 1. 初始化.
+    + 使用input和button
+    + 该组件使用类的方式声明
+````javascript
+import React from 'react'
+import { Input, Button } from 'antd'
+
+export default class LForm extends React.Componet {
+  render() {
+    return (
+      <div>
+        <Input></Input>
+        <Button></Button>
+      </div>
+    )
+  }
+}
+````
+  - 2. 扩展其功能
+````
+import React from 'react'
+import { Input, Button } from 'antd'
+
+// 创建一个高阶组件: 扩展现有表单(事件处理、数据收集、校验)
+function LFormCreate(Comp) {
+  return class extends React.Component {
+    constructor(props) {
+      super(props)
+
+      this.options = {}
+      this.state = {}
+    }
+
+    handleChange = e => {
+      const { name, value } = e.target
+      console.log(name, value)
+      this.setState({ [name]: value }, () => {
+        // 确保值发生变化在校验
+        this.validateField(name)
+      })
+    }
+
+    validateField = field => {
+      // 1. 获取校验规则
+      const rules = this.options[field].rules
+
+      // 任意一项失败,返回false
+      const ret = !rules.some(rule => {
+        if (rule.required) {
+          if (!this.state[field]) {
+            // 校验失败
+            this.setState({
+              [field + 'Message']: rule.message
+            })
+            return true
+          }
+        }
+      })
+      if (ret) {
+        this.setState({
+          [field + 'Message']: ''
+        })
+      }
+      return ret
+    }
+
+    // 校验所有字段
+    validate = cb => {
+      const rets = Object.keys(this.options).map(field =>
+        this.validateField(field)
+      )
+
+      const ret = rets.every(v => v === true)
+      cb(ret, this.state);
+    }
+
+    // 创建input包装器
+    getFileDec = (field, option) => {
+      // 保存当前输入项的配置
+      this.options[field] = option
+
+      return InputComp => (
+        <div>
+          {React.cloneElement(InputComp, {
+            name: field,
+            value: this.state[field] || '',
+            onChange: this.handleChange
+          })}
+
+          {/* 校验错误信息 */}
+          {this.state[field + 'Message'] && (
+            <p style={{color:'red'}}>{this.state[field + 'Message']}</p>
+          )}
+        </div>
+      )
+    }
+
+    render() {
+      return <Comp getFileDec={this.getFileDec} validate={this.validate} />
+    }
+  }
+}
+
+@LFormCreate
+class LForm extends React.Component {
+  onSubmit = () => {
+    console.log('submit')
+    // 校验所有项
+    this.props.validate((isValid, data) => {
+      if (isValid) {
+        // 提交登录
+        console.log('登录: ', data)
+        // 后续的登录逻辑
+      } else {
+        alert('校验失败')
+      }
+    })
+  }
+
+  render() {
+    const { getFileDec } = this.props
+    return (
+      <div>
+        {getFileDec('uname', {
+          rules: [{ required: true, message: '用户名必填' }]
+        })(<Input />)}
+
+        {getFileDec('pwd', {
+          rules: [{ required: true, message: '密码不能为空' }]
+        })(<Input type="password" />)}
+        <Button onClick={this.onSubmit}>登录</Button>
+      </div>
+    )
+  }
+}
+
+export default LForm
+````
 

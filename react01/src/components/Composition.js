@@ -31,7 +31,7 @@ function Fetcher(props) {
   return props.children(user)
 }
 
-function Filter({ children ,type }) {
+function Filter({ children, type }) {
   return (
     <div>
       {React.Children.map(children, child => {
@@ -68,7 +68,6 @@ export default function() {
         <h1>Vue</h1>
         <p>vue很棒!</p>
       </Filter>
-
     </div>
   )
 }

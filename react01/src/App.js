@@ -10,6 +10,10 @@ import { AntdTest } from './components/AntdTest'
 import { CommentList } from './components/CommentList'
 import { Hoc } from './components/Hoc'
 import Composition from './components/Composition'
+import HookTest from './components/HookTest'
+import ContextTest from './components/ContextTest'
+import WrappedNormalLoginForm from './components/AntdForm'
+import LForm from './components/LForm'
 
 class App extends Component {
   state = {
@@ -38,7 +42,8 @@ class App extends Component {
         {/* 属性 */} <img src={logo} alt="" style={{ width: '100px' }} />
         {/* jsx也是表达式 */} {jsx}
         {/* 使用其他组件 */} <Welcome1 name="lzhhhh"> </Welcome1>{' '}
-        <Welcome2 name="odd marron"> </Welcome2> <Clock> </Clock>{' '}
+        <Welcome2 name="odd marron"> </Welcome2>
+        <Clock> </Clock>
         <StateTest> </StateTest>
         {/* 条件与循环 */} <CartSample title="奇怪的栗子"> </CartSample>
         {this.state.prop && <LifeCycle prop={this.state.prop}> </LifeCycle>}
@@ -46,6 +51,11 @@ class App extends Component {
         <CommentList></CommentList>
         <Hoc></Hoc>
         <Composition></Composition>
+        <HookTest></HookTest>
+        {/* Context */}
+        <ContextTest></ContextTest>
+        <WrappedNormalLoginForm></WrappedNormalLoginForm>
+        <LForm></LForm>
       </div>
     )
   }
