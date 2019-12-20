@@ -46,4 +46,58 @@
 
 ***
 # React中的几个核心的概念呢
-虚拟DOM
+# 虚拟DOM (Virtual Document Object Model)
+- DOM的本质是什么: 浏览器的概念,  用JS对象来表示页面上的元素, 并提供了操作DOM 对象的API;
+- 什么是React中的虚拟DOM: 用JS对象来模拟页面上的DOM 和 DOM嵌套
+- 为什么要实现虚拟DOM(虚拟DOM的母的): 为了实现页面中,DOM元素的高效更细
+
+普通的模板引擎渲染,当数据变换时,会重绘整个DOM页面,但经常的情况是: 页面中的数据,仅部分更细.因此整体重新渲染会带来性能损耗.因此急需一种方法来做到按需渲染
+
+[本质]: 用js对象来模拟页面上DOM嵌套关系.
+[目的]: 减少DOM渲染,提高页面元素的高效更新
+# DOM树的概念:
+一个网页呈现的过程:
+1. 浏览器请求服务器获取页面的HTML代码
+2. 浏览器先在内存中,解析DOM结构,并在浏览器内存中,渲染出一棵DOM树
+3. 浏览器把DOM树,呈现在页面上.
+
+
+
+# 如何实现页面的按需更新:
+获取新/旧两棵DOM进行对比,得到需要被按需更新的DOM元素.
+
+# 如何获取DOM树
+- 浏览器中,并无直接获取DOM树的API;因此,我们无法拿到浏览器内存中的DOM树.
+- 自己手动模拟新\旧两个DOM树
+````html
+<div id ="myDiv" title="Marron" data-index="0">
+  <p>栗子好好吃</p>
+</div>
+
+<script>
+// 模拟
+var div = {
+  tagName:'div',
+  attrs: {
+    id: "myDiv",
+    title: "Marron",
+    'data-index': '0'
+  },
+  childrens: [
+    {
+      tagName: 'p',
+      attrs: {},
+      childrens: [
+        "栗子好好吃"
+      ]
+    }
+  ]
+}
+</script>
+
+````
+
+
+
+
+
