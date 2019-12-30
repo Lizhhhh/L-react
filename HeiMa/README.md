@@ -190,3 +190,29 @@ module.exports = {
 [所做事情]:
 1. 根据给定模板,在给定路径下生成内存中的主页
 2. 会自动添加`<script type="text/javacript" src="main.js"></script>`
+
+# 在项目中使用react
+1. 运行`cnpm i react react-dom -S` 安装包
+  - react: 专门用于创建组件和虚拟DOM,同时组件的生命周期都在这个包中
+  - react-dom: 专门进行DOM操作的,最主要的应用场景, 就是ReactDOM.render() [ps]: 通过react包创建的dom是在内存中的.因此需要react-dom来获得内存中的DOM
+  - `-S`: 代表项目从开发到上线都要用到的包
+  - `-D`: 开发时用到的工具
+2. 在index.html页面中,创建容器:
+````html
+<!-- 容器,将来使用 React 创建的虚拟DOM元素,都会被渲染到这个指定的容器中 -->
+<div id="app"></div>
+````
+3. 导入包:
+````javascript
+import React from 'react'
+import ReactDOM from 'react-dom'
+````
+4. 创建虚拟DOM元素:
+````javascript
+const myh1 = React.createElement('h1', { title:'啊,栗子', id: 'myh1'}, '糖炒栗子')
+````
+5. 渲染:
+````javascript
+ReactDOM.render(myh1, document.getElementById('app'));
+````
+
