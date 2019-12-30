@@ -1,7 +1,6 @@
 const vnodeType = {
     HTML: 'HTML',
     TEXT: 'TEXT',
-
     COMPONENT: 'COMPONENT',
     CLASS_COMPONENT: 'CLASS_COMPONENT'
 };
@@ -171,7 +170,6 @@ function patchChildren(prevChildFlag, nextChildFlag, prevChildren, nextChildren,
                     // 老:[abc], 新:[abc]
                     // 位置:相对递增,不修改
 
-
                     // 老:[abc], 新:[cab]
                     // 位置:不是相对递增,需要修改
                     let lastIndex = 0;
@@ -216,7 +214,6 @@ function patchChildren(prevChildFlag, nextChildFlag, prevChildren, nextChildren,
             break;
     }
 }
-
 
 function patchText(prev, next) {
     let el = (next.el = prev.el);

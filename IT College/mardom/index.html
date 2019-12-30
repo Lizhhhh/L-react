@@ -9,27 +9,34 @@
 </head>
 
 <body>
-    <!-- <div id="myDiv" title="Marron" data-index="0">
-        <p>栗子好好吃</p>
-    </div> -->
-    <script src="mar.js"></script>
+    <div id="app">
+        Marron
+    </div>
+    <script src="vnode.js"></script>
     <script>
-        const mar = new Mar();
-        let vnode = mar.createElement({
-            tag: 'div',
-            data: {
-                id: 'myDiv',
-                title: 'Marron',
-                'data-index': 0
-            },
-            children:[
-              mar.createElement({
-                tag:'p',
-                data:{},
-                children:''
-              })
-            ]
-        })
+        const dom = new VDOM();
+        // 创建虚拟DOM
+        // 参数:代表节点的类型,节点中的属性,以及子节点
+        let vdom = dom.create('div', { id: 'test' }, [
+            dom.create('p', { key: 'a', style: 'color: blue;' }, '节点1'),
+            dom.create('p', { key: 'b' }, '节点2'),
+            dom.create('p', { key: 'c', class: 'item-header' }, '节点3'),
+            dom.create('p', { key: 'd' }, '节点4')
+        ]);
+        // 渲染
+        // 参数: 虚拟dom 和 挂载在页面上的地方
+        dom.render(vdom, 'app');
+
+        // // 模拟二次渲染
+        // let vdom1 = dom.create('div', { id: 'test' }, [
+        //     dom.create('p', { key: 'b', style: 'color: blue;' }, '节点1'),
+        //     dom.create('p', { key: 'a' }, '节点2'),
+        //     dom.create('p', { key: 'c', class: 'item-header' }, '节点3'),
+        //     dom.create('p', { key: 'd' }, '节点4')
+        // ]);
+        // setTimeout(() => {
+        //     dom.render(vdom1, 'app');
+        // }, 1000);
     </script>
 </body>
 
