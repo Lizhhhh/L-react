@@ -17,14 +17,15 @@ module.exports = {
 		// 所有第三方模块的配置规则
 		rules: [
 			// 第三方匹配规则
-			{ test: /\.js|jsx$/, use: 'babel-loader', exclude: /node_modules/ }
+			{ test: /\.js|jsx$/, use: 'babel-loader', exclude: /node_modules/ },
+			{ test: /\.css$/, use: ['style-loader', 'css-loader'] }
 		]
 	},
 	resolve: {
-    extensions: ['.js', '.jsx', '.json'], // 表示,这几个文件的后缀名可以省略不写.
-    alias: {
-      '@': path.join(__dirname, './src')
-    }
+		extensions: ['.js', '.jsx', '.json'], // 表示,这几个文件的后缀名可以省略不写.
+		alias: {
+			'@': path.join(__dirname, './src')
+		}
 	}
 };
 

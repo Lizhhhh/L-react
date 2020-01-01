@@ -462,3 +462,107 @@ class 组件名称 extends React.Component {
 [ps]: 有状态组件和无状态组件之间的本质区别就是: 有无state属性和有无生命周期函数.
 
 
+# 创建CmtList组件并渲染基本页面结构
+1. 数据:
+````javascript
+CommentList: [
+  { id: 1, user: '张三', content: '哈哈, 沙发'},
+  { id: 2, user: '李四', content: '哈哈, 板凳'},
+  { id: 3, user: '王五', content: '哈哈, 凉席'},
+  { id: 4, user: '赵六', content: '哈哈, 砖头'},
+  { id: 5, user: '田七', content: '哈哈, 楼下山炮'},
+]
+````
+2. 设计组件从外而内
+- 父组件 CmtList.jsx
+````javascript
+// @/components/CmtList.jsx
+import React from 'react';
+import CmtItem from '@/components/CmtItem';
+// 使用 class 关键字定义父组件
+class CmtList extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			CommentList: [
+				{ id: 1, user: '张三', content: '哈哈, 沙发' },
+				{ id: 2, user: '李四', content: '哈哈, 板凳' },
+				{ id: 3, user: '王五', content: '哈哈, 凉席' },
+				{ id: 4, user: '赵六', content: '哈哈, 砖头' },
+				{ id: 5, user: '田七', content: '哈哈, 楼下山炮' }
+			]
+		};
+	}
+	render() {
+		return (
+			<div>
+				<h1>这是评论列表组件</h1>
+				{this.state.CommentList.map(item => (
+					<CmtItem {...item} key={item.id}></CmtItem>
+				))}
+			</div>
+		);
+	}
+}
+
+export default CmtList;
+````
+
+- 子组件: CmtItem.jsx
+````javascript
+// @/components/CmtList.jsx
+import React from 'react';
+// 使用 function 构造函数, 定义普通的无状态组件
+function CmtItem(props) {
+	return (
+		<div>
+			<h1>评论人: {props.user}</h1>
+			<p>评论内容: {props.content}</p>
+		</div>
+	);
+}
+
+export default CmtItem;
+````
+
+3. 在组件中使用style行内样式并封装样式对象
+[报错]:
+  - `Uncaught Error: The 'style' prop expects a mapping from style properties to values, not a string`: jsx语法中,style应该使用对象的形式而非字符串
+[栗子]:
+````javascript
+<div style={{ border: '1px dashed #ccc', margin: '10px', padding: '10px', boxShadow: '0 0 10px #ccc'}}>
+````
+- 将style抽离
+
+# 在Webpack中配置css loader
+- Webpack默认处理不了.css文件,会报错如下:
+- `./src/css/cmtlist.css 1:0 Module parse failed: Unexpected token (1:0) You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file.`
+- 运行`cnpm i style-loader css-loader -D`
+- 在`webpack.config.js`中添加新规则
+````javascript
+// 与mode平级
+module: {
+  rules: [
+    // 第三方匹配规则
+    {test: /\.css$/, use: ['style-loader','css-loader']}
+  ]
+}
+````
+- 使用
+````javascript
+// CmtList2.jsx
+import cssobj from '@/css/cmtlist.css'  // 注:此时应该配置webpack解析css
+class CmtList extends React.Component {
+  constructor(){
+    super();
+  }
+  render(){
+    return(
+      <div>
+      <h1 className="title">这是评论列表组件</h1>
+      </div>
+    )
+  }
+}
+
+````
